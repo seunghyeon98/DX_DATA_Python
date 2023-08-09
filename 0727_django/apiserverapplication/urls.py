@@ -6,7 +6,7 @@ urlpatterns = [
     path('hello/',helloAPI),
 
     # /example/fbv/books 요청이 오면 booksAPI 함수가 처리
-    path("fbv/books/",booksAPI),
+    path("fbv/books",booksAPI),
 
     # bid를 받아서 1 개의 데이터를 찾아오는 것을 bookAPI 함수가 처리
     path('fbv/book/<int:bid>',bookAPI)

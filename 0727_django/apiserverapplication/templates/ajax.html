@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AJAX</title>
+  </head>
+  <body>
+    AJAX 재밋겟다. 이히힣
+
+    <div id="display"></div>
+    <button id="allbtn">누르면 터집니다</button>
+
+    <button id="fetchbtn">Fetch API 사용</button>
+
+    <!-- ajax로 보낼 때는 id 만 필요 -->
+    <!-- submit 버튼으로 전송할 땐, 나머지 3가지 고려 -->
+    <!-- action은 처리할 서버의 url -->
+    <!-- method는 전송방식으로 생략하면 get -->
+    <!-- enctype는 파일이 있는 경우 multipart-formdata를 설정 -->
+    <form id="bookform">
+      <p>bid<input type="number" name="bid" /></p>
+      <p>제목<input type="text" name="title" /></p>
+      <p>작가<input type="text" name="author" /></p>
+      <p>분류<input type="text" name="category" /></p>
+      <p>페이지수<input type="number" name="pages" /></p>
+      <p>가격<input type="number" name="price" /></p>
+      <p>출간일<input type="date" name="published_date" /></p>
+      <p>설명<textarea name="description" rows="4" cols="20"></textarea></p>
+      <p><input type="button" value="전송" id="insert" /></p>
+    </form>
+  </body>
+
+  <script>
+    document.getElementById("fetchbtn").addEventListener("click", (e) => {
+      //alert("클릭");
+      /*
+      // ajax 사용 순서
+      // ajax 객체 생성 -> open을 하여, 연결을 설정 -> 전송할 데이터 생성 -> 전송 -> 전송이 성공했을 때, 수행할 동작을 작성
+      // 1. ajax 객체 생성
+      let request = new XMLHttpRequest();
+      // alert(request); -> 제대로 생성이 됬는지 확인
+
+      // 2. open을 해서 연결을 설정
+      request.open("GET", "../example/fbv/books", true);
+      // alert(request); -> 또 확인하기
+
+      // 3. 전송할 데이터 생성
+      // 전송
+      request.send("");
+
+      // 4. 성공시, 수행할 동작
+      request.addEventListener("load", (e) => {
+        // 데이터 가져오기
+        let data = JSON.parse(request.responseText);
+        alert(data);
+      });
+      */
+
+      // fetch API를 이용한 전체 데이터 가져오기
+      fetch("../example/fbv/books", {
+        //옵션 설정
+        // 전송 방식이나, 파라미터 설정을 여기서 한다.
+      })
+        .then((response) => response.json())
+        .then((data) => alert(data))
+        .cathch((error) => alert(error)); // 에러시, 수행할 것
+
+      // fetch 함수를 호출되면, 서버에게 요청을 전송한다.
+      // then에 함수를 설정하면, then에게 전송받은 데이터가 전달된다.
+      // 전달된 데이터가 json 이라면, json 메서드를 호출하면
+      // 전달할 데이터를 파싱하고, 그 결과를 다음 함수에게 전달한다.
+    });
+
+    // form 의 형태로 입력을 받아, post 방식으로 데아터 전송하기.
+    document.getElementById("insert").addEventListener("click", (e) => {
+      // form 에 입력된 데이터 가져오기
+      let bookform = document.getElementById("bookform");
+      let formdata = new FormData(bookform);
+
+      // ajax 요청 객체
+      let request = new XMLHttpRequest();
+
+      // 요청 생성
+      request.open("POST", "../example/fbv/books", true);
+      // form를 post 방식으로 전송하기 위한 데이터로 변경
+      request.setRequestHeader(
+        "Content-type",
+        "application/x-www-form-urlencoded"
+      );
+      let param = "";
+
+      for (let pair of formdata.entries()) {
+        param += pair[0] + "=" + pair[1] + "&";
+      }
+
+      // 요청 전송
+      // 요청을 전송하는 것 : request.send()
+      request.send(param);
+
+      // 응답 결과를 처리
+      request.addEventListener("load", (e) => {
+        alert(request.responseText);
+      });
+    });
+
+    document.getElementById("allbtn").addEventListener("click", (e) => {
+      //   alert("뻥이야");
+
+      // ajax 객체 만들기
+      let request = new XMLHttpRequest();
+      // 출력하는 함수
+      //   alert(request);
+
+      //  요청 생성
+      request.open("GET", "../example/fbv/books", true);
+
+      // 요청 전송
+      request.send("");
+
+      // 응답이 오면 호출
+      request.addEventListener("load", (e) => {
+        // alert(request.responseText);
+        //    문자열을 자바스크립트 데이터로 변환
+        //    객체들의 배열
+        let data = JSON.parse(request.responseText);
+        let txt = "";
+        for (let item of data) {
+          // alert(item.title)
+          txt += "<h3>" + item.title + "</h3>";
+          txt += "<p>" + item.price + "</p>";
+          txt += "<p>" + item.published_date + "</p>";
+        }
+        document.getElementById("display").innerHTML = txt;
+
+        // alert(data);
+      });
+    });
+  </script>
+</html>

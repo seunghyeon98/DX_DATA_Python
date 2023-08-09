@@ -19,7 +19,7 @@ def ajax(request):
 def helloAPI(request):
     return Response('Hello REST API')
 
-
+# get
 @api_view(['GET', 'POST'])
 def booksAPI(request):
 
@@ -31,22 +31,24 @@ def booksAPI(request):
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     elif request.method == 'POST':
+        print(request.data) # logging
         #   클라이언트가 전송한 데이터를 Model이 사용할 수 있는 데이터로 변환
         serializer = BookSerializer(data=request.data)
     # print("1") # 이 코드가 실행이 안되면 URL 과 method 연결 실수
-
+       
+        print(serializer)
 
     # 유효성 검사
     if serializer.is_valid():
         # print("321") # 이 코드가 안 찍힌다면, 이름이 잘못된것
-
+        print("Ddd")
         serializer.save() # 데이터를 저장
         
         # 성공했을 때, 전송한 데이터를 다시 전송
         return Response(serializer.data,status=status.HTTP_201_CREATED)
     
     # 실패했을 때의 처리
-    Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
 
 # 기본키를 가지고 데이터를 1개 찾아오는데, 없으면 404 에러를 발생시킨다.
